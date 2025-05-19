@@ -44,6 +44,16 @@
             cursor: pointer;
             border-radius: 5px;
         }
+        .btn-excluir {
+            padding: 5px 10px;
+            background: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: 5px;
+
+         }   
         .pago {
             color: green;
             font-weight: bold;
@@ -118,13 +128,16 @@
 
                     const tr = document.createElement("tr");
 
-                    tr.innerHTML = `
+                      tr.innerHTML = `
                         <td>${numero}</td>
                         <td>${nome}</td>
                         <td>${contato ?? '-'}</td>
                         <td class="${pago ? 'pago' : ''}">${pago ? "Pago" : "Pendente"}</td>
                         <td>
-                            ${!pago ? `<button class="btn-pagar" data-numero="${numero}">Marcar como pago</button>` : ""}
+                            ${!pago ? `
+                                <button class="btn-pagar" data-numero="${numero}">Marcar como pago</button>
+                                <button class="btn-excluir" data-numero="${numero}">Excluir</button>
+                            ` : ""}
                         </td>
                     `;
 
@@ -148,6 +161,25 @@
             }
         });
     }
+         // Botão "Excluir"
+                document.querySelectorAll(".btn-excluir").forEach(btn => {
+                    btn.addEventListener("click", function () {
+                        const numero = this.getAttribute("data-numero");
+
+                        if (confirm("Tem certeza que deseja excluir esta escolha?")) {
+                            update(ref(db, "rifa/" + numero), {
+                                nome: null,
+                                contato: null,
+                                pago: null
+                            }).then(() => {
+                                carregarDados();
+                            });
+                        }
+                    });
+                });
+            
+        ;
+    
 
     document.getElementById("entrar").addEventListener("click", () => {
         const email = document.getElementById("email").value;
@@ -188,7 +220,6 @@
 
 </body>
 </html>
-
 
 
 
